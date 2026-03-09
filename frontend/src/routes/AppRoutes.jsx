@@ -1,37 +1,44 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import Sidebar from '../components/common/Sidebar';
+import { useAuth } from '../../src/context/AuthContext';
+import Sidebar from '../../src/components/common/Sidebar';
 
 // Auth
-import Login from '../pages/auth/Login';
+import Login from '../../src/pages/auth/Login';
 
 // Admin pages
-import AdminDashboard from '../pages/admin/Dashboard';
-import Students from '../pages/admin/Students';
-import Marks from '../pages/admin/Marks';
-import AdminAssignments from '../pages/admin/tasks/Assignments';
-import AdminPresentations from '../pages/admin/tasks/Presentations';
-import AdminLabTasks from '../pages/admin/tasks/LabTasks';
-import AdminProjects from '../pages/admin/tasks/Projects';
+import AdminDashboard from '../../src/pages/admin/Dashboard';
+import Students from '../../src/pages/admin/Students';
+import Marks from '../../src/pages/admin/Marks';
+import AdminAssignments from '../../src/pages/admin/tasks/Assignments';
+import AdminPresentations from '../../src/pages/admin/tasks/Presentations';
+import AdminLabTasks from '../../src/pages/admin/tasks/LabTasks';
+import AdminProjects from '../../src/pages/admin/tasks/Projects';
 
 // Student pages
-import StudentDashboard from '../pages/student/Dashboard';
-import StudentMarks from '../pages/student/Marks';
-import MyAssignments from '../pages/student/tasks/MyAssignment';
-import { MyPresentations, MyLabTasks, MyProjects } from '../pages/student/tasks/StudentTasks';
+import StudentDashboard from '../../src/pages/student/Dashboard';
+import StudentMarks from '../../src/pages/student/Marks';
+import MyAssignments from '../../src/pages/student/tasks/MyAssignment';
+import { MyPresentations, MyLabTasks, MyProjects } from '../../src/pages/student/tasks/StudentTasks';
 
 function AdminLayout() {
   const { user, loading } = useAuth();
   
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>;
+  
   if (!user) {
     console.warn('AdminLayout: No user found, redirecting to login');
+    console.log('User from auth:', user);
+    console.log('LocalStorage user:', localStorage.getItem('user'));
+    console.log('LocalStorage token:', localStorage.getItem('token'));
     return <Navigate to="/login" replace />;
   }
+  
   if (user.role !== 'admin') {
-    console.warn('AdminLayout: User is not admin, redirecting to student');
+    console.warn('AdminLayout: User is not admin, redirecting to student', { role: user.role, name: user.name });
     return <Navigate to="/student" replace />;
   }
+  
+  console.log('AdminLayout: Admin logged in successfully', { role: user.role, name: user.name });
   
   return (
     <div className="flex min-h-screen bg-slate-950">

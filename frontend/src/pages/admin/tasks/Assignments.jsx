@@ -121,7 +121,6 @@ function ViewSubmissionModal({ assignment, onClose, onApprove, allSubmitted, cur
 
   const hasNext = currentIndex < allSubmitted.length - 1;
   const hasPrev = currentIndex > 0;
-
   const daysOverdue = assignment.dueDate ? Math.ceil((new Date() - new Date(assignment.dueDate)) / (1000 * 60 * 60 * 24)) : 0;
   const fileUrl = `/uploads/${assignment.submittedFile}`;
   const isPDF = assignment.submittedFile?.toLowerCase().endsWith('.pdf');
@@ -129,20 +128,12 @@ function ViewSubmissionModal({ assignment, onClose, onApprove, allSubmitted, cur
   return (
     <>
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <div className="p-6 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900">
-            <div>
-              <h2 className="text-lg font-semibold text-white">Review Submission</h2>
-              <p className="text-xs text-slate-500 mt-1">{currentIndex + 1} of {allSubmitted.length} submitted</p>
-            </div>
-            <div className="flex items-center gap-2">
-              {hasPrev && <button onClick={onPrev} className="text-slate-400 hover:text-white p-1"><ChevronLeft size={18} /></button>}
-              {hasNext && <button onClick={onNext} className="text-slate-400 hover:text-white p-1"><ChevronRight size={18} /></button>}
-              <button onClick={onClose} className="text-slate-400 hover:text-white p-1"><X size={20} /></button>
-            </div>
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg">
+          <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-white">Review Submission</h2>
+            <button onClick={onClose} className="text-slate-400 hover:text-white"><X size={20} /></button>
           </div>
           <div className="p-6 space-y-4">
-            {/* Assignment Details */}
             <div className="bg-gradient-to-br from-blue-500/10 to-violet-500/10 border border-slate-700/50 rounded-xl p-4">
               <p className="text-sm font-semibold text-white mb-2">{assignment.title}</p>
               <div className="grid grid-cols-2 gap-2 text-xs text-slate-400">
@@ -152,7 +143,6 @@ function ViewSubmissionModal({ assignment, onClose, onApprove, allSubmitted, cur
               </div>
             </div>
 
-            {/* Student Info */}
             <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
               <p className="text-xs text-slate-500 font-medium mb-3">STUDENT SUBMISSION</p>
               <div className="space-y-2">
@@ -167,7 +157,6 @@ function ViewSubmissionModal({ assignment, onClose, onApprove, allSubmitted, cur
               </div>
             </div>
 
-            {/* Submission Content */}
             {assignment.submissionText && (
               <div>
                 <label className="label text-xs mb-2">SUBMISSION TEXT</label>
@@ -203,7 +192,6 @@ function ViewSubmissionModal({ assignment, onClose, onApprove, allSubmitted, cur
               </div>
             )}
 
-            {/* Review Section */}
             <div className="border-t border-slate-700 pt-4 space-y-4">
               <div>
                 <label className="label">Feedback *</label>
@@ -254,18 +242,18 @@ function ViewSubmissionModal({ assignment, onClose, onApprove, allSubmitted, cur
             </div>
             <div className="flex-1 overflow-auto bg-slate-950">
               <embed 
-                src={`/uploads/${assignment.submittedFile}`} 
+                src={fileUrl} 
                 type="application/pdf" 
                 width="100%" 
                 height="100%" 
               />
             </div>
             <div className="p-4 border-t border-slate-800 flex gap-2">
-              <a href={`/uploads/${assignment.submittedFile}`} target="_blank" rel="noreferrer"
+              <a href={fileUrl} target="_blank" rel="noreferrer"
                 className="flex-1 text-xs text-blue-400 hover:text-blue-300 bg-blue-400/10 border border-blue-500/30 px-3 py-2 rounded-lg flex items-center gap-2 justify-center">
                 <Eye size={14} /> Open in New Tab
               </a>
-              <a href={`/uploads/${assignment.submittedFile}`} download
+              <a href={fileUrl} download
                 className="flex-1 text-xs text-emerald-400 hover:text-emerald-300 bg-emerald-400/10 border border-emerald-500/30 px-3 py-2 rounded-lg flex items-center gap-2 justify-center">
                 <Download size={14} /> Download
               </a>
