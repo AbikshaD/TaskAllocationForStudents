@@ -24,14 +24,21 @@ function AdminLayout() {
   const { user, loading } = useAuth();
   
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" /></div>;
+  
   if (!user) {
     console.warn('AdminLayout: No user found, redirecting to login');
+    console.log('User from auth:', user);
+    console.log('LocalStorage user:', localStorage.getItem('user'));
+    console.log('LocalStorage token:', localStorage.getItem('token'));
     return <Navigate to="/login" replace />;
   }
+  
   if (user.role !== 'admin') {
-    console.warn('AdminLayout: User is not admin, redirecting to student');
+    console.warn('AdminLayout: User is not admin, redirecting to student', { role: user.role, name: user.name });
     return <Navigate to="/student" replace />;
   }
+  
+  console.log('AdminLayout: Admin logged in successfully', { role: user.role, name: user.name });
   
   return (
     <div className="flex min-h-screen bg-slate-950">
