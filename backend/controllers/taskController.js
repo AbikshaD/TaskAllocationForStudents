@@ -21,15 +21,15 @@ const createAndAllocateAssignments = async (req, res) => {
     const students = await Student.find({ batch, semester: Number(semester), isActive: true });
     if (!students.length) return res.status(400).json({ message: 'No students found for this batch/semester' });
     
-    // Shuffle students for random allocation
-    const shuffled = [...students].sort(() => Math.random() - 0.5);
+    // Allocate all students to random topics
     const assignments = [];
     
-    for (let i = 0; i < topics.length; i++) {
-      const student = shuffled[i % shuffled.length];
+    for (const student of students) {
+      // Pick a random topic for this student
+      const randomTopic = topics[Math.floor(Math.random() * topics.length)];
       const assignment = await Assignment.create({
-        title: topics[i].title,
-        description: topics[i].description || '',
+        title: randomTopic.title,
+        description: randomTopic.description || '',
         subject, dueDate, batch, semester: Number(semester),
         allocatedTo: student._id,
         createdBy: req.user._id,
@@ -37,7 +37,7 @@ const createAndAllocateAssignments = async (req, res) => {
       assignments.push(assignment);
     }
     
-    res.status(201).json({ message: `${assignments.length} assignments allocated`, assignments });
+    res.status(201).json({ message: `${assignments.length} assignments allocated to all ${students.length} students`, assignments });
   } catch (error) { res.status(500).json({ message: error.message }); }
 };
 
@@ -92,21 +92,22 @@ const createAndAllocatePresentations = async (req, res) => {
     const students = await Student.find({ batch, semester: Number(semester), isActive: true });
     if (!students.length) return res.status(400).json({ message: 'No students found' });
     
-    const shuffled = [...students].sort(() => Math.random() - 0.5);
+    // Allocate all students to random topics
     const presentations = [];
     
-    for (let i = 0; i < topics.length; i++) {
-      const student = shuffled[i % shuffled.length];
+    for (const student of students) {
+      // Pick a random topic for this student
+      const randomTopic = topics[Math.floor(Math.random() * topics.length)];
       const pres = await Presentation.create({
-        title: topics[i].title,
-        description: topics[i].description || '',
+        title: randomTopic.title,
+        description: randomTopic.description || '',
         subject, dueDate, batch, semester: Number(semester),
         allocatedTo: student._id,
         createdBy: req.user._id,
       });
       presentations.push(pres);
     }
-    res.status(201).json({ message: `${presentations.length} presentations allocated`, presentations });
+    res.status(201).json({ message: `${presentations.length} presentations allocated to all ${students.length} students`, presentations });
   } catch (error) { res.status(500).json({ message: error.message }); }
 };
 
